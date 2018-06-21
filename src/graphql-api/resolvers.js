@@ -11,9 +11,9 @@ module.exports = {
 
 
   Query: {
-    hello: (root, { name }) => `Hello ${name || 'World'}!`,
-    messages: (root, args, { db }) => db.get('messages').value(),
-    uploads: (root, args, { db }) => db.get('uploads').value(),
+    // hello: (root, { name }) => `Hello ${name || 'World'}!`,
+    // messages: (root, args, { db }) => db.get('messages').value(),
+    todos: (root, args, { db }) => db.get('todos').value(),
 
   },
 
@@ -40,8 +40,52 @@ module.exports = {
       return message
     },
 
-    singleUpload: (root, { file }, { processUpload }) => processUpload(file),
-    multipleUpload: (root, { files }, { processUpload }) => Promise.all(files.map(processUpload)),
+      addTodo: (root, { input: { content } }, { pubsub, db }) => {
+          const todo = {
+              id: shortid.generate(),
+              content
+          };
+
+          db
+              .get('todos')
+              .push(todo)
+              .last()
+              .write()
+
+          // pubsub.publish('todos', { messageAdded: message })
+
+          return todo
+      },
+
+      todoDrag: (root, { input: { id, xAxis, yAxis } }, { pubsub, db }) => {
+          // const todo = {
+          //     id: shortid.generate(),
+          //     content
+          // };
+
+          const todo = { id, coords: { xAxis, yAxis } };
+          db
+              .get('todos')
+              .find({ id })
+              .set('coords', { xAxis, yAxis })
+              .write()
+
+          console.log(id, xAxis, yAxis)
+          // db
+          //     .get('todos')
+          //     .push(todo)
+          //     .last()
+          //     .write()
+
+          pubsub.publish('todos', { todoDragging: todo })
+
+          // return todo
+
+          return
+      }
+
+      // singleUpload: (root, { file }, { processUpload }) => processUpload(file),
+    // multipleUpload: (root, { files }, { processUpload }) => Promise.all(files.map(processUpload)),
 
   },
 
@@ -68,5 +112,8 @@ module.exports = {
       subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('messages'),
     },
 
+    todoDragging: {
+        subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('todos'),
+    },
   },
 }

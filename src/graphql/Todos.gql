@@ -1,0 +1,7 @@
+#import "./TodoFragment.gql"
+
+query todos {
+  todos {
+    ...Todo
+  }
+}

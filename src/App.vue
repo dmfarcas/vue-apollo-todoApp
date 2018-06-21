@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <ApolloExample msg="Welcome to Your Vue.js App"/>
+    <Todos />
   </div>
 </template>
 
 <script>
-import ApolloExample from './components/ApolloExample.vue'
+import Todos from './components/Todos.vue'
 
 export default {
   name: 'app',
   components: {
-    ApolloExample
+      Todos
   }
 }
 </script>

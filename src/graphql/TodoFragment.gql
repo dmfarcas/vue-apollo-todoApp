@@ -1,0 +1,8 @@
+fragment Todo on Todo {
+  id
+  content
+  coords {
+    xAxis
+    yAxis
+  }
+}

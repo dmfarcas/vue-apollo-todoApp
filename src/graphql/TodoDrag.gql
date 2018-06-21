@@ -1,0 +1,9 @@
+mutation dragTodo ($input: CoordsInput!) {
+  todoDrag (input: $input) {
+    id
+    coords {
+      xAxis
+      yAxis
+    }
+  }
+}

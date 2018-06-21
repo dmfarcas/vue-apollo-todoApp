@@ -1,6 +1,18 @@
 scalar JSON
 
 
+type Todo {
+  id: ID!
+  content: String!
+  coords: Coords
+}
+
+type Coords {
+  # The X Axis of a To Do
+  xAxis: Int
+  # The Y Axis of a To Do
+  yAxis: Int
+}
 
 # It will increment!
 type Counter {
@@ -23,6 +35,19 @@ input MessageInput {
   text: String!
 }
 
+input CoordsInput {
+  id: String!
+  # The X Axis of a To Do
+  xAxis: Int
+  # The Y Axis of a To Do
+  yAxis: Int
+}
+
+input TodoInput {
+  # Message content
+  content: String!
+}
+
 scalar Upload
 
 type File {
@@ -40,6 +65,7 @@ type Query {
   # List of messages sent by users
   messages: [Message]
   uploads: [File]
+  todos: [Todo]
 
 }
 
@@ -50,6 +76,10 @@ type Mutation {
   singleUpload (file: Upload!): File!
   multipleUpload (files: [Upload!]!): [File!]!
 
+  addTodo (input: TodoInput!): Todo!
+
+  todoDrag (input: CoordsInput!): Todo!
+
 }
 
 type Subscription {
@@ -58,5 +88,7 @@ type Subscription {
   counter: Counter!
   # When a new message is added
   messageAdded: Message!
+
+  todoDragging: Todo!
 
 }
